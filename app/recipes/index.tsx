@@ -12,26 +12,19 @@ import Footer from "../components/footer";
 import { router } from "expo-router";
 
 const RecipesScreen = () => {
+  // Le state "meals" est défini avec un tableau vide par le useState car aucune donnée n'est renseigné lors du premier rendu du composant. Il sera rempli grace au setMeals qui va refaire un rendu du composant avec les données mis a jour.
   const [meals, setMeals] = useState([]);
-  const [loading, setLoading] = useState(true);
 
+  // fonction anonyme qui s'autoinvoque: execution à la lecture. utilisation d'une fontion anonyme pour pouvoir utiliser une fonction asynchrone dans le useEffect à cause du fetch qui est obligatoirement async
   useEffect(() => {
-    const fetchMeals = async () => {
-      try {
-        const response = await fetch(
-          "https://www.themealdb.com/api/json/v1/1/search.php?s="
-        );
-        const data = await response.json();
-
-        setMeals(data.meals || []);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des repas :", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMeals();
+    (async () => {
+      const mealsJson = await fetch(
+        "https://www.themealdb.com/api/json/v1/1/search.php?s="
+      );
+      const meals = await mealsJson.json();
+      // C'est ici que le state est mis à jour avec les données
+      setMeals(meals.meals || []);
+    })();
   }, []);
 
   const handleShowSingleMeals = (mealID: number) => {
@@ -45,7 +38,7 @@ const RecipesScreen = () => {
       <View style={styles.recipeList}>
         <Text style={styles.sectionTitle}>Toutes les recettes</Text>
 
-        {loading ? (
+        {meals.length === 0 ? (
           <Text style={styles.loadingText}>Chargement...</Text>
         ) : (
           <FlatList

@@ -13,24 +13,15 @@ import { router } from "expo-router";
 
 const HomeScreen = () => {
   const [latestMeals, setLatestMeals] = useState([]);
-  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const fetchMeals = async () => {
-      try {
-        const response = await fetch(
-          "https://www.themealdb.com/api/json/v1/1/search.php?s="
-        );
-        const data = await response.json();
-
-        setLatestMeals(data.meals.slice(0, 3));
-      } catch (error) {
-        console.error("Erreur lors de la récupération des repas :", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMeals();
+    (async () => {
+      const mealsJson = await fetch(
+        "https://www.themealdb.com/api/json/v1/1/search.php?s="
+      );
+      const meals = await mealsJson.json();
+      // C'est ici que le state est mis à jour avec les données
+      setLatestMeals(meals.meals.slice(0, 3));
+    })();
   }, []);
 
   // va push le screen recipes, permet de le réutiliser sur mon bouton de ma page d'acceuil pour que ce dernier screen se stack au "premier plan" au press du bouton
@@ -55,7 +46,7 @@ const HomeScreen = () => {
 
       <View style={styles.latestMeals}>
         <Text style={styles.sectionTitle}>Dernières recettes</Text>
-        {loading ? (
+        {latestMeals.length === 0 ? (
           <Text style={styles.loadingText}>Chargement...</Text>
         ) : (
           /* Flatlist pour afficher mon contenu en pouvant le swipe directement, il prend comme params data qui est donc mes 3 dernieres recettes avec "latestMeals", la key qui est l'id de mes recettes récupéré depuis l'API, render item qui va etre le rendu de ma liste ici sous forme de cards cliquables par exemple, avec une image et un titre, horizontal pour dire que la liste sera affichée horizontalement et enfin on cache la barre de scroll */

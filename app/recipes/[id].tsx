@@ -11,39 +11,20 @@ export default function RecipeDetailScreen() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMeal = async () => {
-      try {
-        const response = await fetch(
-          `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
-        );
-        const data = await response.json();
-
-        setMeal(data.meals ? data.meals[0] : null);
-      } catch (error) {
-        console.error("Erreur lors de la récupération de la recette :", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMeal();
+    (async () => {
+      const mealsJson = await fetch(
+        `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
+      );
+      const meals = await mealsJson.json();
+      setMeal(meals.meals ? meals.meals[0] : null);
+    })();
   }, [id]);
-
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <Header />
-        <Text style={styles.loadingText}>Chargement...</Text>
-        <Footer />
-      </View>
-    );
-  }
 
   if (!meal) {
     return (
       <View style={styles.container}>
         <Header />
-        <Text style={styles.errorText}>Recette introuvable.</Text>
+        <Text style={styles.errorText}>Chargement...</Text>
         <Footer />
       </View>
     );
