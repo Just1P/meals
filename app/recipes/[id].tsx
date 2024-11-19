@@ -7,8 +7,7 @@ import { useLocalSearchParams } from "expo-router";
 export default function RecipeDetailScreen() {
   // useLocalSearchParams est un hook qui va récupérer l'id de notre route recipes/[id]
   const { id } = useLocalSearchParams();
-  const [meal, setMeal] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [meal, setMeal] = useState([null]);
 
   useEffect(() => {
     (async () => {
@@ -16,7 +15,7 @@ export default function RecipeDetailScreen() {
         `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
       );
       const meals = await mealsJson.json();
-      setMeal(meals.meals ? meals.meals[0] : null);
+      setMeal(meals.meals[0]);
     })();
   }, [id]);
 
@@ -24,7 +23,7 @@ export default function RecipeDetailScreen() {
     return (
       <View style={styles.container}>
         <Header />
-        <Text style={styles.errorText}>Aucunes recettes trouvées</Text>
+        <Text style={styles.errorText}>Loading...</Text>
         <Footer />
       </View>
     );

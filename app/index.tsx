@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
+  TextInput,
   Image,
   FlatList,
   StyleSheet,
@@ -13,18 +14,18 @@ import { router } from "expo-router";
 
 const HomeScreen = () => {
   const [latestMeals, setLatestMeals] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
   useEffect(() => {
     (async () => {
       const mealsJson = await fetch(
         "https://www.themealdb.com/api/json/v1/1/search.php?s="
       );
       const meals = await mealsJson.json();
-      // C'est ici que le state est mis à jour avec les données
       setLatestMeals(meals.meals.slice(0, 3));
     })();
   }, []);
 
-  // va push le screen recipes, permet de le réutiliser sur mon bouton de ma page d'acceuil pour que ce dernier screen se stack au "premier plan" au press du bouton
   const handleShowAllMeals = () => {
     router.push("recipes");
   };
@@ -33,9 +34,25 @@ const HomeScreen = () => {
     router.push("recipes/" + mealID);
   };
 
+  const handleSearch = () => {
+    router.push(`recipes/search/${searchQuery}`);
+  };
+
   return (
     <View style={styles.container}>
       <Header />
+
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Rechercher une recette"
+          value={searchQuery}
+          onChangeText={(text) => setSearchQuery(text)}
+        />
+        <TouchableOpacity onPress={handleSearch} style={styles.searchButton}>
+          <Text style={styles.searchButtonText}>Rechercher</Text>
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.description}>
         <Text style={styles.descriptionText}>
@@ -49,7 +66,6 @@ const HomeScreen = () => {
         {latestMeals.length === 0 ? (
           <Text style={styles.loadingText}>Chargement...</Text>
         ) : (
-          /* Flatlist pour afficher mon contenu en pouvant le swipe directement, il prend comme params data qui est donc mes 3 dernieres recettes avec "latestMeals", la key qui est l'id de mes recettes récupéré depuis l'API, render item qui va etre le rendu de ma liste ici sous forme de cards cliquables par exemple, avec une image et un titre, horizontal pour dire que la liste sera affichée horizontalement et enfin on cache la barre de scroll */
           <FlatList
             data={latestMeals}
             keyExtractor={(item) => item.idMeal}
@@ -84,6 +100,30 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#f9f9f9",
+  },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginRight: 10,
+  },
+  searchButton: {
+    backgroundColor: "#e67e22",
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+  },
+  searchButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
   description: {
     marginBottom: 30,
