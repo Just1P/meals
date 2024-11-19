@@ -24,7 +24,7 @@ export default function RecipeDetailScreen() {
     return (
       <View style={styles.container}>
         <Header />
-        <Text style={styles.errorText}>Chargement...</Text>
+        <Text style={styles.errorText}>Aucunes recettes trouvées</Text>
         <Footer />
       </View>
     );

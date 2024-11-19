@@ -3,10 +3,7 @@ import { View, Text, Image, StyleSheet } from "react-native";
 const Header = () => {
   return (
     <View style={styles.header}>
-      <Image
-        source={require("../../assets/images/logo.png")}
-        style={styles.logo}
-      />
+      <Image source={require("@/assets/images/logo.png")} style={styles.logo} />
       <Text style={styles.title}>Meals</Text>
       <Text style={styles.subtitle}>Explorez de délicieuses recettes</Text>
     </View>
