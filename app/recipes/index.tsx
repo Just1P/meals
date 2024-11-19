@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,33 +9,65 @@ import {
 } from "react-native";
 import Header from "../components/header";
 import Footer from "../components/footer";
-import { meals } from "../data/meals";
 import { router } from "expo-router";
 
 const RecipesScreen = () => {
+  const [meals, setMeals] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMeals = async () => {
+      try {
+        const response = await fetch(
+          "https://www.themealdb.com/api/json/v1/1/search.php?s="
+        );
+        const data = await response.json();
+
+        setMeals(data.meals || []);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des repas :", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMeals();
+  }, []);
+
   const handleShowSingleMeals = (mealID: number) => {
     router.push("recipes/" + mealID);
   };
+
   return (
     <View style={styles.container}>
       <Header />
 
       <View style={styles.recipeList}>
         <Text style={styles.sectionTitle}>Toutes les recettes</Text>
-        <FlatList
-          data={meals}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => handleShowSingleMeals(item.id)}
-              style={styles.mealCard}
-            >
-              <Image source={{ uri: item.image }} style={styles.mealImage} />
-              <Text style={styles.mealTitle}>{item.title}</Text>
-              <Text style={styles.mealDescription}>{item.description}</Text>
-            </TouchableOpacity>
-          )}
-        />
+
+        {loading ? (
+          <Text style={styles.loadingText}>Chargement...</Text>
+        ) : (
+          <FlatList
+            data={meals}
+            keyExtractor={(item) => item.idMeal}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => handleShowSingleMeals(item.idMeal)}
+                style={styles.mealCard}
+              >
+                <Image
+                  source={{ uri: item.strMealThumb }}
+                  style={styles.mealImage}
+                />
+                <Text style={styles.mealTitle}>{item.strMeal}</Text>
+                <Text style={styles.mealDescription}>
+                  {item.strInstructions.slice(0, 100)}...
+                </Text>
+              </TouchableOpacity>
+            )}
+          />
+        )}
       </View>
 
       <Footer />
@@ -57,6 +90,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 15,
     color: "#2c3e50",
+  },
+  loadingText: {
+    fontSize: 16,
+    color: "#7f8c8d",
+    textAlign: "center",
+    marginVertical: 20,
   },
   mealCard: {
     marginBottom: 20,

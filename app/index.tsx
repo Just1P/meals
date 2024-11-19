@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,11 +9,29 @@ import {
 } from "react-native";
 import Header from "./components/header";
 import Footer from "./components/footer";
-import { meals } from "./data/meals";
 import { router } from "expo-router";
 
 const HomeScreen = () => {
-  const latestMeals = meals.slice(-3);
+  const [latestMeals, setLatestMeals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const fetchMeals = async () => {
+      try {
+        const response = await fetch(
+          "https://www.themealdb.com/api/json/v1/1/search.php?s="
+        );
+        const data = await response.json();
+
+        setLatestMeals(data.meals.slice(0, 3));
+      } catch (error) {
+        console.error("Erreur lors de la récupération des repas :", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMeals();
+  }, []);
 
   // va push le screen recipes, permet de le réutiliser sur mon bouton de ma page d'acceuil pour que ce dernier screen se stack au "premier plan" au press du bouton
   const handleShowAllMeals = () => {
@@ -37,22 +55,29 @@ const HomeScreen = () => {
 
       <View style={styles.latestMeals}>
         <Text style={styles.sectionTitle}>Dernières recettes</Text>
-        {/* Flatlist pour afficher mon contenu en pouvant le swipe directement, il prend comme params data qui est donc mes 3 dernieres recettes avec "lastMeals", la key qui est l'id de mes recettes qui est renseigné dans mon tableau d'objets, render item qui va etre la rendu ma liste ici sous forme de cards cliquables par exemple, avec une image et un titre, horizontal pour dire que la liste sera affichée horizontalement et enfin on cache la barre de scroll   */}
-        <FlatList
-          data={latestMeals}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => handleShowSingleMeals(item.id)}
-              style={styles.mealCard}
-            >
-              <Image source={{ uri: item.image }} style={styles.mealImage} />
-              <Text style={styles.mealTitle}>{item.title}</Text>
-            </TouchableOpacity>
-          )}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-        />
+        {loading ? (
+          <Text style={styles.loadingText}>Chargement...</Text>
+        ) : (
+          /* Flatlist pour afficher mon contenu en pouvant le swipe directement, il prend comme params data qui est donc mes 3 dernieres recettes avec "latestMeals", la key qui est l'id de mes recettes récupéré depuis l'API, render item qui va etre le rendu de ma liste ici sous forme de cards cliquables par exemple, avec une image et un titre, horizontal pour dire que la liste sera affichée horizontalement et enfin on cache la barre de scroll */
+          <FlatList
+            data={latestMeals}
+            keyExtractor={(item) => item.idMeal}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => handleShowSingleMeals(item.idMeal)}
+                style={styles.mealCard}
+              >
+                <Image
+                  source={{ uri: item.strMealThumb }}
+                  style={styles.mealImage}
+                />
+                <Text style={styles.mealTitle}>{item.strMeal}</Text>
+              </TouchableOpacity>
+            )}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+        )}
         <TouchableOpacity onPress={handleShowAllMeals} style={styles.button}>
           <Text style={styles.buttonText}>Voir toutes les recettes</Text>
         </TouchableOpacity>
@@ -87,6 +112,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 15,
     color: "#2c3e50",
+  },
+  loadingText: {
+    fontSize: 16,
+    color: "#7f8c8d",
+    textAlign: "center",
+    marginVertical: 20,
   },
   mealCard: {
     marginRight: 15,

@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-// Le Layout est ce qui va permettre de configurer mes stacks pour avoir cette navigation
+// Le Layout est ce qui va permettre de configurer mes stacks pour avoir cette navigation, mais pas que
 
 export default function RootLayout() {
   return (
