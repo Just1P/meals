@@ -1,4 +1,3 @@
-import { router } from "expo-router";
 import React from "react";
 import {
   View,
@@ -8,79 +7,26 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-
-const meals = [
-  {
-    id: 1,
-    title: "Spaghetti bolognaise",
-    description: "Des pâtes avec de la sauce tomate et de la viande hachée",
-    image:
-      "https://assets.afcdn.com/recipe/20160419/14652_w1024h1024c1cx2420cy1872.jpg",
-    category: "pasta",
-  },
-  {
-    id: 2,
-    title: "Salade César",
-    description:
-      "Une salade avec de la salade verte, du poulet, des croûtons et de la sauce César",
-    image: "https://images.ricardocuisine.com/services/recipes/8440.jpg",
-    category: "salad",
-  },
-  {
-    id: 3,
-    title: "Tarte aux pommes",
-    description: "Une tarte sucrée avec des pommes",
-    image: "https://assets.afcdn.com/recipe/20220128/128250_w600.jpg",
-    category: "dessert",
-  },
-  {
-    id: 4,
-    title: "Risotto aux champignons",
-    description: "Un risotto crémeux avec des champignons",
-    image: "https://assets.afcdn.com/recipe/20221020/136481_w600.jpg",
-    category: "pasta",
-  },
-  {
-    id: 5,
-    title: "Salade niçoise",
-    description:
-      "Une salade avec des tomates, des oeufs, des olives, du thon et des haricots verts",
-    image: "https://assets.afcdn.com/recipe/20190704/94687_w600.jpg",
-    category: "salad",
-  },
-  {
-    id: 6,
-    title: "Tiramisu",
-    description:
-      "Un dessert italien avec du café, des biscuits et du mascarpone",
-    image: "https://assets.afcdn.com/recipe/20190529/93097_w600.jpg",
-    category: "dessert",
-  },
-];
+import Header from "./components/header";
+import Footer from "./components/footer";
+import { meals } from "./data/meals";
+import { router } from "expo-router";
 
 const HomeScreen = () => {
-  {
-    /* Selectionne les 3 derniers éléments de mon tableau meals */
-  }
   const latestMeals = meals.slice(-3);
 
-  {
-    /* va push le screen recipes, permet de le réutiliser sur mon bouton de ma page d'acceuil pour que ce dernier screen se stack au "premier plan" au press du bouton */
-  }
+  // va push le screen recipes, permet de le réutiliser sur mon bouton de ma page d'acceuil pour que ce dernier screen se stack au "premier plan" au press du bouton
   const handleShowAllMeals = () => {
     router.push("recipes");
   };
 
+  const handleShowSingleMeals = (mealID: number) => {
+    router.push("recipes/" + mealID);
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Image
-          source={require("../assets/images/logo.png")}
-          style={styles.logo}
-        />
-        <Text style={styles.title}>Meals</Text>
-        <Text style={styles.subtitle}>Explorez de délicieuses recettes</Text>
-      </View>
+      <Header />
 
       <View style={styles.description}>
         <Text style={styles.descriptionText}>
@@ -88,18 +34,21 @@ const HomeScreen = () => {
           goûts. Laissez-vous inspirer par nos suggestions !
         </Text>
       </View>
+
       <View style={styles.latestMeals}>
         <Text style={styles.sectionTitle}>Dernières recettes</Text>
-
-        {/* Flatlist pour afficher mon contenu en pouvant le swipe directement, il prend comme params data qui est donc mes 3 dernieres recettes avec "lastMeals", la key qui est l'id de mes recettes qu'on a renseigné, render item qui va etre la rendu ma liste ici sous forme de carde par exemple, avec une image et un titre, horizontal pour dire que la liste sera affichée horizontalement et enfin on cache la barre de scroll */}
+        {/* Flatlist pour afficher mon contenu en pouvant le swipe directement, il prend comme params data qui est donc mes 3 dernieres recettes avec "lastMeals", la key qui est l'id de mes recettes qui est renseigné dans mon tableau d'objets, render item qui va etre la rendu ma liste ici sous forme de cards cliquables par exemple, avec une image et un titre, horizontal pour dire que la liste sera affichée horizontalement et enfin on cache la barre de scroll   */}
         <FlatList
           data={latestMeals}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <View style={styles.mealCard}>
+            <TouchableOpacity
+              onPress={() => handleShowSingleMeals(item.id)}
+              style={styles.mealCard}
+            >
               <Image source={{ uri: item.image }} style={styles.mealImage} />
               <Text style={styles.mealTitle}>{item.title}</Text>
-            </View>
+            </TouchableOpacity>
           )}
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -109,11 +58,7 @@ const HomeScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          © 2024 Meals. Tous droits réservés.
-        </Text>
-      </View>
+      <Footer />
     </View>
   );
 };
@@ -123,24 +68,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#f9f9f9",
-  },
-  header: {
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  logo: {
-    width: 120,
-    height: 120,
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 36,
-    fontWeight: "bold",
-    color: "#2c3e50",
-  },
-  subtitle: {
-    fontSize: 18,
-    color: "#7f8c8d",
   },
   description: {
     marginBottom: 30,
@@ -188,14 +115,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#fff",
-  },
-  footer: {
-    alignItems: "center",
-    marginTop: "auto",
-  },
-  footerText: {
-    fontSize: 12,
-    color: "#95a5a6",
   },
 });
 
