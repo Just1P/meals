@@ -6,7 +6,7 @@ import { meals } from "../data/meals";
 import { useLocalSearchParams } from "expo-router";
 
 export default function RecipeDetailScreen() {
-  //   useLocalSearchparams est un hook qui va récupérer l'id de notre route /[id] pour afficher les bon elements de notre tableau d'objet en fonction de ce dernier
+  //   useLocalSearchparams est un hook qui va récupérer l'id de notre route recipes/[id] pour afficher les bon elements de notre tableau d'objet en fonction de ce dernier
   const { id } = useLocalSearchParams();
   const meal = meals.find((meal) => meal.id === Number(id));
 
