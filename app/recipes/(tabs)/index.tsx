@@ -10,10 +10,11 @@ import {
 import Header from "../../components/header";
 import Footer from "../../components/footer";
 import { router } from "expo-router";
+import { useGetMeals } from "@/hook/useGetMeals";
 
 const RecipesScreen = () => {
+  const meals = useGetMeals();
   // Le state "meals" est défini avec un tableau vide par le useState car aucune donnée n'est renseigné lors du premier rendu du composant. Il sera rempli grace au setMeals qui va refaire un rendu du composant avec les données mis a jour.
-  const [meals, setMeals] = useState([]);
 
   // fonction anonyme qui s'autoinvoque: execution à la lecture. utilisation d'une fontion anonyme pour pouvoir utiliser une fonction asynchrone dans le useEffect à cause du fetch qui est obligatoirement async
   useEffect(() => {
@@ -28,7 +29,7 @@ const RecipesScreen = () => {
   }, []);
 
   const handleShowSingleMeals = (mealID: number) => {
-    router.push("recipes/" + mealID);
+    router.push("recipes/details/" + mealID);
   };
 
   return (
@@ -45,7 +46,7 @@ const RecipesScreen = () => {
             data={meals}
             keyExtractor={(item) => item.idMeal}
             renderItem={({ item }) => (
-              <TouchableOpacity
+              <View
                 onPress={() => handleShowSingleMeals(item.idMeal)}
                 style={styles.mealCard}
               >
@@ -57,7 +58,7 @@ const RecipesScreen = () => {
                 <Text style={styles.mealDescription}>
                   {item.strInstructions.slice(0, 100)}...
                 </Text>
-              </TouchableOpacity>
+              </View>
             )}
           />
         )}

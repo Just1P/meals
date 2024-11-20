@@ -11,9 +11,13 @@ import {
 } from "react-native";
 import Header from "./components/header";
 import Footer from "./components/footer";
+import MealListItem from "../component/meals/MealListItem";
 import { router } from "expo-router";
+import { useGetMeals } from "@/hook/useGetMeals";
 
 const HomeScreen = () => {
+  const meals = useGetMeals();
+
   const [latestMeals, setLatestMeals] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -31,10 +35,6 @@ const HomeScreen = () => {
     router.push("recipes");
   };
 
-  const handleShowSingleMeals = (mealID: number) => {
-    router.push("recipes/details/" + mealID);
-  };
-
   const handleSearch = () => {
     router.push("recipes/search/" + searchQuery);
   };
@@ -47,14 +47,11 @@ const HomeScreen = () => {
     router.push("recipes/random");
   };
 
-  const handleProfile = () => {
-    router.push("user/user");
-  };
-
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Header />
 
+      {/* Barre de recherche */}
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
@@ -74,6 +71,7 @@ const HomeScreen = () => {
         </Text>
       </View>
 
+      {/* Dernières recettes avec Swipeable */}
       <View style={styles.latestMeals}>
         <Text style={styles.sectionTitle}>Dernières recettes</Text>
         {latestMeals.length === 0 ? (
@@ -82,18 +80,7 @@ const HomeScreen = () => {
           <FlatList
             data={latestMeals}
             keyExtractor={(item) => item.idMeal}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => handleShowSingleMeals(item.idMeal)}
-                style={styles.mealCard}
-              >
-                <Image
-                  source={{ uri: item.strMealThumb }}
-                  style={styles.mealImage}
-                />
-                <Text style={styles.mealTitle}>{item.strMeal}</Text>
-              </TouchableOpacity>
-            )}
+            renderItem={({ item }) => <MealListItem recipe={item} />}
             horizontal
             showsHorizontalScrollIndicator={false}
           />
@@ -105,10 +92,6 @@ const HomeScreen = () => {
 
       <TouchableOpacity onPress={handleRandom} style={styles.randomButton}>
         <Text style={styles.randomButtonText}>Recette Aléatoire</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={handleProfile} style={styles.randomButton}>
-        <Text style={styles.randomButtonText}>Profil</Text>
       </TouchableOpacity>
 
       <Footer />
@@ -174,21 +157,6 @@ const styles = StyleSheet.create({
     color: "#7f8c8d",
     textAlign: "center",
     marginVertical: 20,
-  },
-  mealCard: {
-    marginRight: 15,
-    alignItems: "center",
-  },
-  mealImage: {
-    width: 130,
-    height: 130,
-    borderRadius: 10,
-    marginBottom: 5,
-  },
-  mealTitle: {
-    fontSize: 14,
-    textAlign: "center",
-    color: "#34495e",
   },
   button: {
     marginTop: 20,
