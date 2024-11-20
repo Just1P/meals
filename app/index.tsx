@@ -42,10 +42,13 @@ const HomeScreen = () => {
     setSearchQuery(text);
   };
 
+  const handleRandom = () => {
+    router.push("recipes/random");
+  };
+
   return (
     <View style={styles.container}>
       <Header />
-
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
@@ -93,6 +96,11 @@ const HomeScreen = () => {
           <Text style={styles.buttonText}>Voir toutes les recettes</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Bouton pour aller au Random Screen */}
+      <TouchableOpacity onPress={handleRandom} style={styles.randomButton}>
+        <Text style={styles.randomButtonText}>Recette Aléatoire</Text>
+      </TouchableOpacity>
 
       <Footer />
     </View>
@@ -178,6 +186,19 @@ const styles = StyleSheet.create({
     borderRadius: 25,
   },
   buttonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+  randomButton: {
+    marginTop: 20,
+    alignSelf: "center",
+    backgroundColor: "#3498db",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+  },
+  randomButtonText: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#fff",

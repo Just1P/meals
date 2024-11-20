@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, ScrollView } from "react-native";
-import Header from "../components/header";
-import Footer from "../components/footer";
+import Header from "../../components/header";
+import Footer from "../../components/footer";
 import { useLocalSearchParams } from "expo-router";
 
 export default function RecipeDetailScreen() {

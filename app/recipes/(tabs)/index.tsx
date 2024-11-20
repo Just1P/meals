@@ -7,8 +7,8 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import Header from "../components/header";
-import Footer from "../components/footer";
+import Header from "../../components/header";
+import Footer from "../../components/footer";
 import { router } from "expo-router";
 
 const RecipesScreen = () => {
