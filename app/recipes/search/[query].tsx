@@ -28,7 +28,7 @@ export default function SearchResultsScreen() {
   }, [query]);
 
   const handleShowSingleMeals = (mealID: number) => {
-    router.push("recipes/" + mealID);
+    router.push("recipes/details/" + mealID);
   };
 
   return (

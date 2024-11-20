@@ -5,6 +5,7 @@ import {
   TextInput,
   Image,
   FlatList,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
@@ -31,7 +32,7 @@ const HomeScreen = () => {
   };
 
   const handleShowSingleMeals = (mealID: number) => {
-    router.push("recipes/" + mealID);
+    router.push("recipes/details/" + mealID);
   };
 
   const handleSearch = () => {
@@ -51,8 +52,9 @@ const HomeScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Header />
+
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
@@ -106,17 +108,21 @@ const HomeScreen = () => {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={handleProfile} style={styles.randomButton}>
-        <Text style={styles.randomButtonText}>Recette Aléatoire</Text>
+        <Text style={styles.randomButtonText}>Profil</Text>
       </TouchableOpacity>
 
       <Footer />
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#f9f9f9",
+  },
+  scrollContainer: {
+    flexGrow: 1,
     padding: 20,
     backgroundColor: "#f9f9f9",
   },

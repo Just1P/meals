@@ -34,6 +34,15 @@ export default function MealsLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="create-meal"
+        options={{
+          title: "Créer une recette",
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="create" size={24} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
