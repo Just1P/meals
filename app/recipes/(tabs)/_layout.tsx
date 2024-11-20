@@ -1,10 +1,35 @@
 import { Tabs } from "expo-router";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function MealsLayout() {
   return (
     <Tabs>
-      <Tabs.Screen name="random" options={{ title: "Recette Aléatoire" }} />
-      <Tabs.Screen name="index" options={{ title: "Toutes les recettes" }} />
+      <Tabs.Screen
+        name="random"
+        options={{
+          title: "Recette Aléatoire",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "search" : "search-outline"}
+              size={24}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: "Toutes les recettes",
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialCommunityIcons
+              name={focused ? "hamburger-check" : "hamburger"}
+              size={24}
+              color={color}
+            />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
