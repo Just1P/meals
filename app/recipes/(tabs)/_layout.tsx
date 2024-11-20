@@ -1,5 +1,9 @@
 import { Tabs } from "expo-router";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 
 export default function MealsLayout() {
   return (
@@ -22,8 +26,8 @@ export default function MealsLayout() {
         options={{
           title: "Toutes les recettes",
           tabBarIcon: ({ color, focused }) => (
-            <MaterialCommunityIcons
-              name={focused ? "hamburger-check" : "hamburger"}
+            <MaterialIcons
+              name={focused ? "kitchen" : "soup-kitchen"}
               size={24}
               color={color}
             />

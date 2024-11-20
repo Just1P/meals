@@ -46,6 +46,10 @@ const HomeScreen = () => {
     router.push("recipes/random");
   };
 
+  const handleProfile = () => {
+    router.push("user/user");
+  };
+
   return (
     <View style={styles.container}>
       <Header />
@@ -97,8 +101,11 @@ const HomeScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Bouton pour aller au Random Screen */}
       <TouchableOpacity onPress={handleRandom} style={styles.randomButton}>
+        <Text style={styles.randomButtonText}>Recette Aléatoire</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={handleProfile} style={styles.randomButton}>
         <Text style={styles.randomButtonText}>Recette Aléatoire</Text>
       </TouchableOpacity>
 
