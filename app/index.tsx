@@ -35,7 +35,11 @@ const HomeScreen = () => {
   };
 
   const handleSearch = () => {
-    router.push(`recipes/search/${searchQuery}`);
+    router.push("recipes/search/" + searchQuery);
+  };
+
+  const handleChangeSearch = (text) => {
+    setSearchQuery(text);
   };
 
   return (
@@ -47,7 +51,7 @@ const HomeScreen = () => {
           style={styles.searchInput}
           placeholder="Rechercher une recette"
           value={searchQuery}
-          onChangeText={(text) => setSearchQuery(text)}
+          onChangeText={(text) => handleChangeSearch(text)}
         />
         <TouchableOpacity onPress={handleSearch} style={styles.searchButton}>
           <Text style={styles.searchButtonText}>Rechercher</Text>
