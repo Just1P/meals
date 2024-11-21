@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Header from "../../components/header";
 import Footer from "../../components/footer";

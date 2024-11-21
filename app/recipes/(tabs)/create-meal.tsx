@@ -1,3 +1,4 @@
+import { createMeal } from "@/services/create-meal-service";
 import { useState } from "react";
 import {
   StyleSheet,
@@ -19,24 +20,6 @@ const CreateMealScreen = () => {
     setIngredients(text);
   };
 
-  const handleCreate = async () => {
-    const response = await fetch(
-      "https://www.themealdb.com/api/json/v1/1/create.php",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          ingredients,
-        }),
-      }
-    );
-
-    console.log(response);
-  };
-
   return (
     <View style={styles.container}>
       <Text>Créer une recette</Text>
@@ -53,7 +36,7 @@ const CreateMealScreen = () => {
         onChangeText={handleChangeIngredients}
       />
 
-      <TouchableOpacity onPress={handleCreate}>
+      <TouchableOpacity onPress={() => createMeal(name, ingredients)}>
         <Text>Créer</Text>
       </TouchableOpacity>
     </View>

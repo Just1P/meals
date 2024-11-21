@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  Image,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Image, FlatList, StyleSheet } from "react-native";
 import Header from "../../components/header";
 import Footer from "../../components/footer";
 import { router } from "expo-router";
