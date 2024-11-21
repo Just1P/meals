@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -8,24 +8,11 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
+import { useGetMealsByQuery } from "@/hook/useGetMealsByQuery";
 
 export default function SearchResultsScreen() {
   const { query } = useLocalSearchParams();
-  const [meals, setMeals] = useState([]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const mealsJson = await fetch(
-          `https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`
-        );
-        const meals = await mealsJson.json();
-        setMeals(meals.meals || []);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des recettes :", error);
-      }
-    })();
-  }, [query]);
+  const { meals, loading } = useGetMealsByQuery(query); // Récupération des données et de l'état
 
   const handleShowSingleMeals = (mealID: number) => {
     router.push("recipes/details/" + mealID);
@@ -34,7 +21,9 @@ export default function SearchResultsScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Résultats pour : {query}</Text>
-      {meals.length === 0 ? (
+      {loading ? (
+        <Text style={styles.loadingText}>Chargement...</Text>
+      ) : meals.length === 0 ? (
         <Text style={styles.noResultsText}>Aucune recette trouvée.</Text>
       ) : (
         <FlatList

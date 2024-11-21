@@ -3,26 +3,10 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Header from "../../components/header";
 import Footer from "../../components/footer";
 import { router } from "expo-router";
+import { useGetRandomMeals } from "@/hook/useGetRandomMeals";
 
 const RandomScreen = () => {
-  const [meal, setMeal] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const mealsJson = await fetch(
-          "https://www.themealdb.com/api/json/v1/1/random.php"
-        );
-        const meals = await mealsJson.json();
-        setMeal(meals.meals[0]);
-      } catch (error) {
-        console.error("Erreur lors de la récupération de la recette :", error);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+  const { meal, loading } = useGetRandomMeals();
 
   const handleShowRecipeDetails = (mealID: number) => {
     router.push("recipes/details/" + mealID);
@@ -38,9 +22,6 @@ const RandomScreen = () => {
         <View style={styles.mealCard}>
           <Image source={{ uri: meal.strMealThumb }} style={styles.mealImage} />
           <Text style={styles.mealTitle}>{meal.strMeal}</Text>
-          <Text style={styles.mealDescription}>
-            {meal.strInstructions.slice(0, 50)}...
-          </Text>
           <TouchableOpacity
             style={styles.button}
             onPress={handleShowRecipeDetails}

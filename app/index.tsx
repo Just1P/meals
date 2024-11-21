@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -11,28 +11,20 @@ import {
 } from "react-native";
 import Header from "./components/header";
 import Footer from "./components/footer";
-import MealListItem from "../component/meals/MealListItem";
 import { router } from "expo-router";
 import { useGetMeals } from "@/hook/useGetMeals";
 
 const HomeScreen = () => {
-  const meals = useGetMeals();
-
-  const [latestMeals, setLatestMeals] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    (async () => {
-      const mealsJson = await fetch(
-        "https://www.themealdb.com/api/json/v1/1/search.php?s="
-      );
-      const meals = await mealsJson.json();
-      setLatestMeals(meals.meals.slice(0, 3));
-    })();
-  }, []);
+  const meals = useGetMeals();
 
   const handleShowAllMeals = () => {
     router.push("recipes");
+  };
+
+  const handleShowSingleMeals = (mealID: number) => {
+    router.push("recipes/details/" + mealID);
   };
 
   const handleSearch = () => {
@@ -51,7 +43,6 @@ const HomeScreen = () => {
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Header />
 
-      {/* Barre de recherche */}
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
@@ -64,6 +55,7 @@ const HomeScreen = () => {
         </TouchableOpacity>
       </View>
 
+      {/* Description */}
       <View style={styles.description}>
         <Text style={styles.descriptionText}>
           Découvrez une variété de recettes simples et savoureuses pour tous les
@@ -71,16 +63,28 @@ const HomeScreen = () => {
         </Text>
       </View>
 
-      {/* Dernières recettes avec Swipeable */}
       <View style={styles.latestMeals}>
         <Text style={styles.sectionTitle}>Dernières recettes</Text>
-        {latestMeals.length === 0 ? (
+        {meals.length === 0 ? (
           <Text style={styles.loadingText}>Chargement...</Text>
         ) : (
           <FlatList
-            data={latestMeals}
+            data={meals}
             keyExtractor={(item) => item.idMeal}
-            renderItem={({ item }) => <MealListItem recipe={item} />}
+            renderItem={({ item }) => (
+              <View style={styles.mealCard}>
+                <Image
+                  source={{ uri: item.strMealThumb }}
+                  style={styles.mealImage}
+                />
+                <Text style={styles.mealTitle}>{item.strMeal}</Text>
+                <TouchableOpacity
+                  onPress={() => handleShowSingleMeals(item.idMeal)}
+                >
+                  <Text style={styles.detailsText}>Voir la recette</Text>
+                </TouchableOpacity>
+              </View>
+            )}
             horizontal
             showsHorizontalScrollIndicator={false}
           />
@@ -157,6 +161,34 @@ const styles = StyleSheet.create({
     color: "#7f8c8d",
     textAlign: "center",
     marginVertical: 20,
+  },
+  mealCard: {
+    marginRight: 15,
+    alignItems: "center",
+    backgroundColor: "#fff",
+    padding: 10,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  mealImage: {
+    width: 130,
+    height: 130,
+    borderRadius: 10,
+    marginBottom: 5,
+  },
+  mealTitle: {
+    fontSize: 14,
+    textAlign: "center",
+    color: "#34495e",
+  },
+  detailsText: {
+    fontSize: 14,
+    color: "#3498db",
+    textAlign: "center",
   },
   button: {
     marginTop: 20,

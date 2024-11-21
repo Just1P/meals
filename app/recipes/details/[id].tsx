@@ -1,23 +1,14 @@
-import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, ScrollView } from "react-native";
 import Header from "../../components/header";
 import Footer from "../../components/footer";
 import { useLocalSearchParams } from "expo-router";
+import { useGetMealsById } from "@/hook/useGetMealsById";
 
 export default function RecipeDetailScreen() {
   // useLocalSearchParams est un hook qui va récupérer l'id de notre route recipes/[id]
   const { id } = useLocalSearchParams();
-  const [meal, setMeal] = useState([null]);
 
-  useEffect(() => {
-    (async () => {
-      const mealsJson = await fetch(
-        `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`
-      );
-      const meals = await mealsJson.json();
-      setMeal(meals.meals[0]);
-    })();
-  }, [id]);
+  const meal = useGetMealsById(id);
 
   if (!meal) {
     return (
